@@ -1,0 +1,16 @@
+{
+  "name": "stockwise",
+  "version": "1.0.0",
+  "private": true,
+  "description": "",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "workspaces": [
+  "backend",
+  "frontend" ],
+  "type": "commonjs"
+}
