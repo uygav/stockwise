@@ -1,9 +1,15 @@
 import express from 'express'
 import 'dotenv/config';
 import { pool } from './db/pool';
+import { authRouter } from "./routes/auth"
+import cors from 'cors'
 
 const app = express()
 const PORT = process.env.PORT || 4000
+
+app.use(cors({ origin: 'http://localhost:5173' }))
+app.use(express.json())
+app.use('/api/auth', authRouter)
 
 app.get('/api/testing', (_req,res) => {
     res.json({status:'ok'})

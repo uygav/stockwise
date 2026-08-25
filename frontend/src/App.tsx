@@ -1,0 +1,19 @@
+import {Routes, Route} from 'react-router'
+import {LoginPage} from './pages/LoginPage'
+import { DashboardPage } from './pages/DashboardPage'
+import { RegisterPage} from "./pages/RegisterPage"
+
+function App() {
+  return (
+    <div className="flex h-screen items-center justify-center">
+      <Routes>
+        <Route path='/login' element={<LoginPage/>} />
+        <Route path='register' element={<RegisterPage/>}></Route>
+        <Route path='/' element={<DashboardPage/>}></Route>
+
+      </Routes>
+    </div>
+  )
+}
+
+export default App
