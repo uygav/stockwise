@@ -22,7 +22,7 @@ export function LoginPage(){
 
         if (!response.ok) {
             const data = await response.json()
-            setError(data.error ?? "Giriş sırasında bir hata oluştu")
+            setError(data.error ?? "there is an error during login")
             return
         }
 

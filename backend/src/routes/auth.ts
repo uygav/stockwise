@@ -2,6 +2,7 @@ import {Router} from "express"
 import bcrypt from 'bcrypt'
 import { pool } from '../db/pool'
 import jwt from 'jsonwebtoken'
+import { requireAuth } from "../middleware/auth"
 
 export const authRouter = Router()
 
@@ -25,7 +26,7 @@ authRouter.post('/register', async (req, res) => {
         const businessId = businessResult.rows[0].id
 
         const userResult = await client.query(
-             `INSERT INTO users (business_id, email, password_hash, role)
+            `INSERT INTO users (business_id, email, password_hash, role)
             VALUES ($1, $2, $3, 'owner')
             RETURNING id, email, role`,
         [businessId, email, passwordHash]
@@ -78,5 +79,9 @@ authRouter.post('/login', async (req, res) => {
   )
 
   res.json({ token })
+})
+
+authRouter.get('/me', requireAuth, (req,res) => {
+  res.json({user: (req as any).user })
 })
 
