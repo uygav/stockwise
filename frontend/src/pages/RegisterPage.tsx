@@ -1,4 +1,4 @@
-import {useState} from "react"
+import {useState, type SubmitEvent} from "react"
 import {Button} from "@/components/ui/button"
 import {Input} from "@/components/ui/input"
 import {Label} from "@/components/ui/label"
@@ -11,7 +11,7 @@ export function RegisterPage(){
     const [error, setError] = useState("")
     const navigate = useNavigate()
 
-    async function handleSubmit(e:React.FormEvent){
+    async function handleSubmit(e: SubmitEvent<HTMLFormElement>){
         e.preventDefault()
         
         setError("")

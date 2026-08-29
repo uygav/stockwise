@@ -3,6 +3,7 @@ import {LoginPage} from './pages/LoginPage'
 import { DashboardPage } from './pages/DashboardPage'
 import { RegisterPage} from "./pages/RegisterPage"
 import { ProtectedRoute } from './components/ProtectedRoute'
+import { ProductsPage } from './pages/ProductsPage'
 
 function App() {
   return (
@@ -15,6 +16,11 @@ function App() {
             <DashboardPage/>
           </ProtectedRoute>
         }></Route>
+        <Route path='/products' 
+        element={
+        <ProtectedRoute>
+          <ProductsPage />
+        </ProtectedRoute>}/>
 
       </Routes>
     </div>

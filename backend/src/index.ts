@@ -3,6 +3,7 @@ import 'dotenv/config';
 import { pool } from './db/pool';
 import { authRouter } from "./routes/auth"
 import cors from 'cors'
+import { productsRouter } from './routes/products'
 
 const app = express()
 const PORT = process.env.PORT || 4000
@@ -10,6 +11,7 @@ const PORT = process.env.PORT || 4000
 app.use(cors({ origin: 'http://localhost:5173' }))
 app.use(express.json())
 app.use('/api/auth', authRouter)
+app.use('/api/products', productsRouter)
 
 app.get('/api/testing', (_req,res) => {
     res.json({status:'ok'})
