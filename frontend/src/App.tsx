@@ -4,6 +4,7 @@ import { DashboardPage } from './pages/DashboardPage'
 import { RegisterPage} from "./pages/RegisterPage"
 import { ProtectedRoute } from './components/ProtectedRoute'
 import { ProductsPage } from './pages/ProductsPage'
+import { StockMovementsPage } from './pages/StockMovementsPage'
 
 function App() {
   return (
@@ -21,7 +22,10 @@ function App() {
         <ProtectedRoute>
           <ProductsPage />
         </ProtectedRoute>}/>
-
+         <Route path='/stock-movements'
+          element={<ProtectedRoute>
+                      <StockMovementsPage />
+                  </ProtectedRoute>}/>
       </Routes>
     </div>
   )
