@@ -104,7 +104,7 @@ export function SalesPage(){
     const total = cart.reduce((sum, item) => sum + item.quantity * item.unitPrice, 0)
 
     return (
-    <div className="mx-auto max-w-xl p-8">
+    <div className="mx-auto w-full max-w-md p-8">
         <h1 className="mb-4 text-2xl font-bold">Sales</h1>
 
         <form onSubmit={handleAddToCart} className="mb-8 flex flex-col gap-4">
@@ -136,7 +136,7 @@ export function SalesPage(){
 
         <ul className="mb-4 flex flex-col gap-2">
             {cart.map((item) => (
-                <li key={item.id} className="flex justify-between rounded border p-3">
+                <li key={item.id} className="flex justify-between gap-4 rounded border p-3">
                     <span>{item.productName} × {item.quantity}</span>
                     <span>{(item.quantity * item.unitPrice).toFixed(2)}</span>
                 </li>

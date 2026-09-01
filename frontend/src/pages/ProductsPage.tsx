@@ -19,6 +19,8 @@ export function ProductsPage(){
     const [barcode, setBarcode] = useState("")
     const [purchasePrice, setPurchasePrice] = useState("")
     const [salePrice, setSalePrice] = useState("")
+    const [editingId, setEditingId] = useState<number | null>(null)
+    const [error, setError] = useState("")
 
     useEffect(() => {
         async function fetchProducts(){
@@ -33,35 +35,91 @@ export function ProductsPage(){
         }
 
         fetchProducts()
-    }, [])
+        
+        }, [])
 
-    async function handleSubmit(e: SubmitEvent<HTMLFormElement>){
-        e.preventDefault()
+        async function handleSubmit(e: SubmitEvent<HTMLFormElement>){
+            e.preventDefault()
 
-        const token = localStorage.getItem("token")
+            const token = localStorage.getItem("token")
 
-        const response = await fetch("http://localhost:4000/api/products", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                Authorization: `Bearer ${token}`,
-            },
-            body: JSON.stringify({ name, category, barcode, purchasePrice, salePrice }),
-        })
+            const url = editingId
+            ? `http://localhost:4000/api/products/${editingId}`
+            : "http://localhost:4000/api/products"
+        const method = editingId ? "PUT" : "POST"
 
-        const data = await response.json()
-        setProducts([...products, data.product])
+        const response = await fetch(url, {
+            method,
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${token}`,
+                },
+                body: JSON.stringify({ name, category, barcode, purchasePrice, salePrice }),
+            })
 
-        setName("")
-        setCategory("")
-        setBarcode("")
-        setPurchasePrice("")
-        setSalePrice("")
-    }
+            const data = await response.json()
+            
+            if (editingId) {
+                setProducts(products.map((product) => (product.id === editingId ? data.product : product)))
+            } else {
+                setProducts([...products, data.product])
+            }
+
+            setName("")
+            setCategory("")
+            setBarcode("")
+            setPurchasePrice("")
+            setSalePrice("")
+            setEditingId(null)
+
+            }
+
+
+        function handleEdit(product: Product) {
+            setEditingId(product.id)
+            setName(product.name)
+            setCategory(product.category || "")
+            setBarcode(product.barcode || "")
+            setPurchasePrice(product.purchase_price)
+            setSalePrice(product.sale_price)
+        }
+
+        function handleCancelEdit() {
+            setEditingId(null)
+            setName("")
+            setCategory("")
+            setBarcode("")
+            setPurchasePrice("")
+            setSalePrice("")
+        }
+
+
+        async function handleDelete(id: number) {
+
+            setError("")
+            const token = localStorage.getItem("token")
+
+            const response = await fetch(`http://localhost:4000/api/products/${id}`, {
+                method: "DELETE",
+                headers: { Authorization: `Bearer ${token}` },
+            })
+
+            if (!response.ok) {
+                const data = await response.json()
+                setError(data.error ?? "An error occurred while deleting the product.")
+                return
+            }
+
+            setProducts(products.filter((product) => product.id !== id))
+        }
+
+
 
     return(
-        <div className="mx-auto max-w-xl p-8">
+        <div className="mx-auto w-full max-w-md p-8">
             <h1 className="mb-4 text-2xl font-bold">Products</h1>
+            
+            {error && <p className="mb-4 text-sm text-red-500">{error}</p>}
 
             <form onSubmit={handleSubmit} className="mb-8 flex flex-col gap-4">
                 <div className="flex flex-col gap-2">
@@ -94,7 +152,14 @@ export function ProductsPage(){
                    <Input id="salePrice" type="number" value={salePrice} onChange={(e) => setSalePrice(e.target.value)} required />
                 </div>
 
-                <Button type="submit">Add Product</Button>
+                <div className="flex gap-2">
+                    <Button type="submit">{editingId ? "Update Product" : "Add Product"}</Button>
+                    {editingId && (
+                        <Button type="button" onClick={handleCancelEdit}>
+                            Cancel
+                        </Button>
+                    )}
+                </div>
             </form>
 
             <ul className="flex flex-col gap-2">
@@ -103,6 +168,15 @@ export function ProductsPage(){
                     <p className="font-bold">{product.name}</p>
                     <p className="text-sm text-gray-500">{product.category || "there is no category"}</p>
                     <p>{product.sale_price}</p>
+
+                    <div className="mt-2 flex gap-2">
+                        <Button type="button" onClick={() => handleEdit(product)}>
+                            Edit
+                        </Button>
+                        <Button type="button" onClick={() => handleDelete(product.id)}>
+                            Delete
+                        </Button>
+                    </div>
                 </li>
             ))}
             </ul>

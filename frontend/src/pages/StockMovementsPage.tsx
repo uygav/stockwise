@@ -75,7 +75,7 @@ export function StockMovementsPage(){
     }
 
     return(
-        <div className="mx-auto max-w-xl p-8">
+        <div className="mx-auto w-full max-w-md p-8">
             <h1 className="mb-4 text-2xl font-bold">Stock Movements</h1>
 
             <form onSubmit={handleSubmit} className="mb-8 flex flex-col gap-4">

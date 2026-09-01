@@ -9,7 +9,7 @@ import { SalesPage } from './pages/SalesPages'
 
 function App() {
   return (
-    <div className="flex h-screen items-center justify-center">
+    <div className="flex min-h-screen items-center justify-center">
       <Routes>
         <Route path='/login' element={<LoginPage/>} />
         <Route path='register' element={<RegisterPage/>}></Route>
