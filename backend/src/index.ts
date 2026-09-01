@@ -5,6 +5,7 @@ import { authRouter } from "./routes/auth"
 import cors from 'cors'
 import { productsRouter } from './routes/products'
 import { stockMovementsRouter } from './routes/stock-movements';
+import { salesRouter } from './routes/sales';
 
 const app = express()
 const PORT = process.env.PORT || 4000
@@ -14,6 +15,7 @@ app.use(express.json())
 app.use('/api/auth', authRouter)
 app.use('/api/products', productsRouter)
 app.use('/api/stock-movements', stockMovementsRouter)
+app.use('/api/sales', salesRouter)
 
 app.get('/api/testing', (_req,res) => {
     res.json({status:'ok'})
