@@ -2,6 +2,7 @@ import { useState, useEffect, type SubmitEvent } from "react";
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
+import { Link } from "react-router"
 
 type Product = {
     id: number
@@ -105,6 +106,7 @@ export function SalesPage(){
 
     return (
     <div className="mx-auto w-full max-w-md p-8">
+        <Link to="/" className="mb-4 inline-block text-sm text-gray-500">← Dashboard</Link>
         <h1 className="mb-4 text-2xl font-bold">Sales</h1>
 
         <form onSubmit={handleAddToCart} className="mb-8 flex flex-col gap-4">

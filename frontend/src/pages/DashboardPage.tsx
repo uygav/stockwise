@@ -1,7 +1,79 @@
-export function DashboardPage(){
-    return(
-        <div className="flex h-screen items-center justify-center">
-            <h1 className="text-2xl font-bold">Dashboard</h1>
+import { useState, useEffect } from "react"
+import { Link } from "react-router"
+import { Button } from "@/components/ui/button"
+
+type Sale = {
+    id: number
+    total_amount: string
+    created_at: string
+}
+
+type Summary = {
+    productCount: number
+    salesCount: number
+    totalRevenue: string
+    recentSales: Sale[]
+}
+
+export function DashboardPage() {
+    const [summary, setSummary] = useState<Summary | null>(null)
+
+    useEffect(() => {
+        async function fetchSummary() {
+            const token = localStorage.getItem("token")
+
+            const response = await fetch("http://localhost:4000/api/dashboard/summary", {
+                headers: { Authorization: `Bearer ${token}` },
+            })
+
+            const data = await response.json()
+            setSummary(data)
+        }
+
+        fetchSummary()
+    }, [])
+
+    if (!summary) {
+        return (
+            <div className="mx-auto w-full max-w-md p-8">
+                <p>Loading...</p>
+            </div>
+        )
+    }
+
+    return (
+        <div className="mx-auto w-full max-w-md p-8">
+            <h1 className="mb-4 text-2xl font-bold">Dashboard</h1>
+
+            <div className="mb-8 grid grid-cols-2 gap-4">
+                <div className="rounded border p-4">
+                    <p className="text-sm text-gray-500">Products</p>
+                    <p className="text-2xl font-bold">{summary.productCount}</p>
+                </div>
+                <div className="rounded border p-4">
+                    <p className="text-sm text-gray-500">Sales</p>
+                    <p className="text-2xl font-bold">{summary.salesCount}</p>
+                </div>
+                <div className="col-span-2 rounded border p-4">
+                    <p className="text-sm text-gray-500">Total Revenue</p>
+                    <p className="text-2xl font-bold">{summary.totalRevenue}</p>
+                </div>
+            </div>
+
+            <div className="mb-8 flex gap-2">
+                <Link to="/products"><Button type="button">Products</Button></Link>
+                <Link to="/stock-movements"><Button type="button">Stock Movements</Button></Link>
+                <Link to="/sales"><Button type="button">Sales</Button></Link>
+            </div>
+
+            <h2 className="mb-4 text-xl font-bold">Recent Sales</h2>
+            <ul className="flex flex-col gap-2">
+                {summary.recentSales.map((sale) => (
+                    <li key={sale.id} className="rounded border p-3">
+                        {sale.total_amount} — {new Date(sale.created_at).toLocaleString()}
+                    </li>
+                ))}
+            </ul>
         </div>
     )
 }
