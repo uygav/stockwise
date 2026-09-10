@@ -7,6 +7,7 @@ import { productsRouter } from './routes/products'
 import { stockMovementsRouter } from './routes/stock-movements';
 import { salesRouter } from './routes/sales';
 import { dashboardRouter } from './routes/dashboard';
+import { usersRouter } from './routes/users';
 
 const app = express()
 const PORT = process.env.PORT || 4000
@@ -18,6 +19,7 @@ app.use('/api/products', productsRouter)
 app.use('/api/stock-movements', stockMovementsRouter)
 app.use('/api/sales', salesRouter)
 app.use('/api/dashboard', dashboardRouter)
+app.use('/api/users', usersRouter)
 
 app.get('/api/testing', (_req,res) => {
     res.json({status:'ok'})

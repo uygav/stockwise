@@ -1,10 +1,10 @@
 import { Router } from "express";
 import { pool } from "../db/pool"
-import { requireAuth } from "../middleware/auth";
+import { requireAuth, requireRole } from "../middleware/auth";
 
 export const stockMovementsRouter = Router()
 
-stockMovementsRouter.post('/', requireAuth, async (req,res) => {
+stockMovementsRouter.post('/', requireAuth, requireRole('owner', 'warehouse_staff'), async (req,res) => {
     const {productId, type, quantity, reason } = req.body
     const { businessId, userId } = (req as any).user
 
@@ -37,7 +37,7 @@ stockMovementsRouter.post('/', requireAuth, async (req,res) => {
     })
 })
 
-stockMovementsRouter.get('/', requireAuth, async (req, res) => {
+stockMovementsRouter.get('/', requireAuth, requireRole('owner', 'warehouse_staff'), async (req, res) => {
   const { businessId } = (req as any).user
 
   const result = await pool.query(

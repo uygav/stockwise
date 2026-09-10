@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react"
-import { Link } from "react-router"
+import { Link, useNavigate } from "react-router"
 import { Button } from "@/components/ui/button"
+import { getCurrentUser } from "@/lib/auth"
 
 type Sale = {
     id: number
@@ -17,6 +18,8 @@ type Summary = {
 
 export function DashboardPage() {
     const [summary, setSummary] = useState<Summary | null>(null)
+    const user = getCurrentUser()
+    const navigate = useNavigate()
 
     useEffect(() => {
         async function fetchSummary() {
@@ -25,6 +28,12 @@ export function DashboardPage() {
             const response = await fetch("http://localhost:4000/api/dashboard/summary", {
                 headers: { Authorization: `Bearer ${token}` },
             })
+
+             if (!response.ok) {
+                localStorage.removeItem("token")
+                navigate("/login")
+                return
+            }
 
             const data = await response.json()
             setSummary(data)
@@ -62,8 +71,15 @@ export function DashboardPage() {
 
             <div className="mb-8 flex gap-2">
                 <Link to="/products"><Button type="button">Products</Button></Link>
-                <Link to="/stock-movements"><Button type="button">Stock Movements</Button></Link>
-                <Link to="/sales"><Button type="button">Sales</Button></Link>
+                {(user?.role === "owner" || user?.role === "warehouse_staff") && (
+                    <Link to="/stock-movements"><Button type="button">Stock Movements</Button></Link>
+                )}
+                {(user?.role === "owner" || user?.role === "cashier") && (
+                    <Link to="/sales"><Button type="button">Sales</Button></Link>
+                )}
+                {user?.role === "owner" && (
+                    <Link to="/users"><Button type="button">Add User</Button></Link>
+                )}
             </div>
 
             <h2 className="mb-4 text-xl font-bold">Recent Sales</h2>

@@ -6,6 +6,8 @@ import { ProtectedRoute } from './components/ProtectedRoute'
 import { ProductsPage } from './pages/ProductsPage'
 import { StockMovementsPage } from './pages/StockMovementsPage'
 import { SalesPage } from './pages/SalesPages'
+import { RoleProtectedRoute } from './components/RoleProtectedRoute'
+import { UsersPage } from './pages/UsersPage'
 
 function App() {
   return (
@@ -15,8 +17,9 @@ function App() {
         <Route path='register' element={<RegisterPage/>}></Route>
         <Route path='/' element={<ProtectedRoute><DashboardPage/></ProtectedRoute>}></Route>
         <Route path='/products' element={ <ProtectedRoute><ProductsPage /></ProtectedRoute>}/>
-        <Route path='/stock-movements' element={<ProtectedRoute><StockMovementsPage /></ProtectedRoute>}/>
-        <Route path='/sales' element={<ProtectedRoute><SalesPage /></ProtectedRoute>} />
+        <Route path='/stock-movements' element={<ProtectedRoute><RoleProtectedRoute allowedRoles={['owner', 'warehouse_staff']}><StockMovementsPage /></RoleProtectedRoute></ProtectedRoute>}/>
+        <Route path='/sales' element={<ProtectedRoute><RoleProtectedRoute allowedRoles={['owner', 'cashier']}><SalesPage /></RoleProtectedRoute></ProtectedRoute>} />
+        <Route path='/users' element={<ProtectedRoute><RoleProtectedRoute allowedRoles={['owner']}><UsersPage /></RoleProtectedRoute></ProtectedRoute>} />
       </Routes>
     </div>
   )

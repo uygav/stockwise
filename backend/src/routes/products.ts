@@ -1,10 +1,10 @@
 import { Router } from 'express'
 import { pool } from '../db/pool'
-import { requireAuth } from '../middleware/auth'
+import { requireAuth, requireRole } from '../middleware/auth'
 
 export const productsRouter = Router()
 
-productsRouter.post('/', requireAuth , async (req, res) => {
+productsRouter.post('/', requireAuth , requireRole('owner'), async (req, res) => {
     const {name, category, barcode, purchasePrice, salePrice} = req.body
 
     const { businessId } = (req as any).user
@@ -36,7 +36,7 @@ productsRouter.get('/', requireAuth, async (req, res) => {
 
 
 
-productsRouter.put('/:id', requireAuth, async (req, res) => {
+productsRouter.put('/:id', requireAuth, requireRole('owner'), async (req, res) => {
     const { id } = req.params
     const { businessId } = (req as any).user
     const { name, category, barcode, purchasePrice, salePrice } = req.body
@@ -60,7 +60,7 @@ productsRouter.put('/:id', requireAuth, async (req, res) => {
     res.json({ product: result.rows[0] })
 })
 
-productsRouter.delete('/:id', requireAuth, async (req, res) => {
+productsRouter.delete('/:id', requireAuth, requireRole('owner'), async (req, res) => {
     const { id } = req.params
     const { businessId } = (req as any).user
 
