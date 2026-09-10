@@ -78,8 +78,19 @@ export function DashboardPage() {
                     <Link to="/sales"><Button type="button">Sales</Button></Link>
                 )}
                 {user?.role === "owner" && (
-                    <Link to="/users"><Button type="button">Add User</Button></Link>
-                )}
+                     <Link to="/users"><Button type="button">Add User</Button></Link>
+                 )}
+                <Button
+                    type="button"
+                    variant="outline"
+                    onClick={() => {
+                        localStorage.removeItem("token")
+                        navigate("/login")
+                    }}
+                >
+                    Logout
+                </Button>
+                
             </div>
 
             <h2 className="mb-4 text-xl font-bold">Recent Sales</h2>
