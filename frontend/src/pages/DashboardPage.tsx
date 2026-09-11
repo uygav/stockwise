@@ -79,7 +79,10 @@ export function DashboardPage() {
                 )}
                 {user?.role === "owner" && (
                      <Link to="/users"><Button type="button">Add User</Button></Link>
-                 )}
+                )}
+                {user?.role === "owner" && (
+                    <Link to="/reports"><Button type="button">Reports</Button></Link>
+                )}
                 <Button
                     type="button"
                     variant="outline"
