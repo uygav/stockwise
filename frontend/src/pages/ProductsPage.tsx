@@ -11,6 +11,7 @@ type Product = {
     barcode: string | null
     purchase_price: string
     sale_price: string
+    min_stock_level: number
 }
 
 export function ProductsPage(){
@@ -20,6 +21,7 @@ export function ProductsPage(){
     const [barcode, setBarcode] = useState("")
     const [purchasePrice, setPurchasePrice] = useState("")
     const [salePrice, setSalePrice] = useState("")
+    const [minStockLevel, setMinStockLevel] = useState("")
     const [editingId, setEditingId] = useState<number | null>(null)
     const [error, setError] = useState("")
 
@@ -55,11 +57,16 @@ export function ProductsPage(){
                     "Content-Type": "application/json",
                     Authorization: `Bearer ${token}`,
                 },
-                body: JSON.stringify({ name, category, barcode, purchasePrice, salePrice }),
+                body: JSON.stringify({ name, category, barcode, purchasePrice, salePrice, minStockLevel }),
             })
 
             const data = await response.json()
-            
+
+            if (!response.ok) {
+                setError(data.error ?? "there is an error saving the product")
+                return
+            }
+
             if (editingId) {
                 setProducts(products.map((product) => (product.id === editingId ? data.product : product)))
             } else {
@@ -71,6 +78,7 @@ export function ProductsPage(){
             setBarcode("")
             setPurchasePrice("")
             setSalePrice("")
+            setMinStockLevel("")
             setEditingId(null)
 
             }
@@ -83,6 +91,7 @@ export function ProductsPage(){
             setBarcode(product.barcode || "")
             setPurchasePrice(product.purchase_price)
             setSalePrice(product.sale_price)
+            setMinStockLevel(String(product.min_stock_level))
         }
 
         function handleCancelEdit() {
@@ -92,6 +101,7 @@ export function ProductsPage(){
             setBarcode("")
             setPurchasePrice("")
             setSalePrice("")
+            setMinStockLevel("")
         }
 
 
@@ -152,6 +162,11 @@ export function ProductsPage(){
                 <div className="flex flex-col gap-2">
                    <Label htmlFor="salePrice">Sale Price</Label>
                    <Input id="salePrice" type="number" value={salePrice} onChange={(e) => setSalePrice(e.target.value)} required />
+                </div>
+
+                <div className="flex flex-col gap-2">
+                   <Label htmlFor="minStockLevel">Min Stock Level</Label>
+                   <Input id="minStockLevel" type="number" value={minStockLevel} onChange={(e) => setMinStockLevel(e.target.value)} />
                 </div>
 
                 <div className="flex gap-2">

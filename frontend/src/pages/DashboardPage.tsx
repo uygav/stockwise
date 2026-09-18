@@ -83,6 +83,9 @@ export function DashboardPage() {
                 {user?.role === "owner" && (
                     <Link to="/reports"><Button type="button">Reports</Button></Link>
                 )}
+                {(user?.role === "owner" || user?.role === "warehouse_staff") && (
+                    <Link to="/alerts"><Button type="button">Alerts</Button></Link>
+                )}
                 <Button
                     type="button"
                     variant="outline"
