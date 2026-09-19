@@ -31,6 +31,7 @@ export function SalesPage(){
 
     const [productId, setProductId] = useState("")
     const [quantity, setQuantity] = useState("")
+    const [error, setError] = useState("")
 
 
     useEffect(() => {
@@ -84,6 +85,7 @@ export function SalesPage(){
     async function handleCompleteSale() {
         if (cart.length === 0) return
 
+        setError("")
         const token = localStorage.getItem("token")
 
         const response = await fetch("http://localhost:4000/api/sales", {
@@ -98,6 +100,12 @@ export function SalesPage(){
         })
 
         const data = await response.json()
+
+        if (!response.ok) {
+            setError(data.error ?? "there is an error completing the sale")
+            return
+        }
+
         setSales([data.sale, ...sales])
         setCart([])
     }
@@ -108,6 +116,7 @@ export function SalesPage(){
     <div className="mx-auto w-full max-w-md p-8">
         <Link to="/" className="mb-4 inline-block text-sm text-gray-500">← Dashboard</Link>
         <h1 className="mb-4 text-2xl font-bold">Sales</h1>
+        {error && <p className="mb-4 text-sm text-red-500">{error}</p>}
 
         <form onSubmit={handleAddToCart} className="mb-8 flex flex-col gap-4">
             <div className="flex flex-col gap-2">

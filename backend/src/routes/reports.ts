@@ -15,7 +15,7 @@ reportsRouter.get('/sales', requireAuth, requireRole('owner'), async (req, res) 
   const summaryResult = await pool.query(
     `SELECT COUNT(*), COALESCE(SUM(total_amount), 0) AS total_revenue
      FROM sales
-     WHERE business_id = $1 AND created_at >= $2 AND created_at <= $3`,
+     WHERE business_id = $1 AND created_at >= $2 AND created_at < $3::date + INTERVAL '1 day'`,
     [businessId, startDate, endDate]
   )
 
@@ -24,7 +24,7 @@ reportsRouter.get('/sales', requireAuth, requireRole('owner'), async (req, res) 
      FROM sale_items si
      JOIN sales s ON s.id = si.sale_id
      JOIN products p ON p.id = si.product_id
-     WHERE s.business_id = $1 AND s.created_at >= $2 AND s.created_at <= $3
+     WHERE s.business_id = $1 AND s.created_at >= $2 AND s.created_at < $3::date + INTERVAL '1 day'
      GROUP BY p.id, p.name
      ORDER BY quantity_sold DESC
      LIMIT 10`,

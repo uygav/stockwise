@@ -27,6 +27,7 @@ export function StockMovementsPage(){
     const [type, setType] = useState<"in" | "out">("in")
     const [quantity, setQuantity] = useState("")
     const [reason, setReason] = useState("")
+    const [error, setError] = useState("")
     
     useEffect(()=>{
         async function fetchProducts(){
@@ -57,6 +58,7 @@ export function StockMovementsPage(){
     async function handleSubmit(e: SubmitEvent<HTMLFormElement>){
         e.preventDefault()
 
+        setError("")
          const token = localStorage.getItem("token")
 
         const response = await fetch("http://localhost:4000/api/stock-movements", {
@@ -69,6 +71,12 @@ export function StockMovementsPage(){
         })
 
         const data = await response.json()
+
+        if (!response.ok) {
+            setError(data.error ?? "there is an error saving the movement")
+            return
+        }
+
         setMovements([...movements, data.movement])
         setProductId("")
         setQuantity("")
@@ -79,6 +87,7 @@ export function StockMovementsPage(){
         <div className="mx-auto w-full max-w-md p-8">
             <Link to="/" className="mb-4 inline-block text-sm text-gray-500">← Dashboard</Link>
             <h1 className="mb-4 text-2xl font-bold">Stock Movements</h1>
+            {error && <p className="mb-4 text-sm text-red-500">{error}</p>}
 
             <form onSubmit={handleSubmit} className="mb-8 flex flex-col gap-4">
                 <div className="flex flex-col gap-2">
