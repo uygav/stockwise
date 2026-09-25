@@ -10,6 +10,7 @@ import { dashboardRouter } from './routes/dashboard';
 import { usersRouter } from './routes/users';
 import { reportsRouter } from './routes/reports';
 import { alertsRouter } from './routes/alerts';
+import { mlRouter } from './routes/mltest'
 
 const app = express()
 const PORT = process.env.PORT || 4000
@@ -24,6 +25,7 @@ app.use('/api/dashboard', dashboardRouter)
 app.use('/api/users', usersRouter)
 app.use('/api/reports', reportsRouter)
 app.use('/api/alerts', alertsRouter)
+app.use('/api/ml', mlRouter)
 
 app.get('/api/testing', (_req,res) => {
     res.json({status:'ok'})

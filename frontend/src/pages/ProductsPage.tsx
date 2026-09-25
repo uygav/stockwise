@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Link } from "react-router"
+import { getCurrentUser } from "@/lib/auth"
 
 type Product = {
     id: number
@@ -24,6 +25,9 @@ export function ProductsPage(){
     const [minStockLevel, setMinStockLevel] = useState("")
     const [editingId, setEditingId] = useState<number | null>(null)
     const [error, setError] = useState("")
+    const [forecasts, setForecasts] = useState<Record<number,any>>({})
+
+    const user = getCurrentUser()
 
     useEffect(() => {
         async function fetchProducts(){
@@ -124,6 +128,16 @@ export function ProductsPage(){
             setProducts(products.filter((product) => product.id !== id))
         }
 
+        async function handleForecast(productId: number) {
+            const token = localStorage.getItem("token")
+
+            const response = await fetch(`http://localhost:4000/api/ml/depletion/${productId}`, {
+                headers: { Authorization: `Bearer ${token}` },
+            })
+
+            const data = await response.json()
+            setForecasts({ ...forecasts, [productId]: data })
+        }
 
 
     return(
@@ -193,7 +207,20 @@ export function ProductsPage(){
                         <Button type="button" onClick={() => handleDelete(product.id)}>
                             Delete
                         </Button>
+                        {(user?.role === "owner" || user?.role === "warehouse_staff") && (
+                            <Button type="button" onClick={() => handleForecast(product.id)}>
+                                Forecast
+                            </Button>
+                        )}
                     </div>
+                     {forecasts[product.id] && (
+                        <p className="mt-2 text-sm text-gray-500">
+                            Stock: {forecasts[product.id].currentStock} —{" "}
+                            {forecasts[product.id].estimated_days_until_depletion !== null
+                                ? `depletes in ~${Math.round(forecasts[product.id].estimated_days_until_depletion)} days`
+                                : "not expected to run out"}
+                        </p>
+                    )}
                 </li>
             ))}
             </ul>
